@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FtxApi.Util
 {
@@ -20,6 +21,6 @@ namespace FtxApi.Util
         {
             return (long)(time - _epochTime).TotalSeconds;
         }
-
     }
+
 }

@@ -2,6 +2,11 @@
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using SuperSocket.ClientEngine;
+using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Serialization;
 using WebSocket4Net;
 
 namespace FtxApi
@@ -13,6 +18,7 @@ namespace FtxApi
         protected WebSocket _webSocketClient;
 
         public Action OnWebSocketConnect;
+        public Action<dynamic> OnWebSocketMessageReceive;
 
         public FtxWebSocketApi(string url)
         {
@@ -68,7 +74,7 @@ namespace FtxApi
             Console.WriteLine($"OnOpen: {e}");
         }
 
-        protected void WebSocketOnError(object sender, ErrorEventArgs e)
+        protected void WebSocketOnError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e)
         {
             Console.WriteLine($"OnError: {e.Exception}");
         }
@@ -80,7 +86,8 @@ namespace FtxApi
 
         protected void WebsocketOnMessageReceive(object o, MessageReceivedEventArgs messageReceivedEventArgs)
         {
-            Console.WriteLine(messageReceivedEventArgs.Message);
+            dynamic json = JObject.Parse(messageReceivedEventArgs.Message);
+            OnWebSocketMessageReceive?.Invoke(json);
         }
 
         private void OnDataRecieved(object sender, DataReceivedEventArgs e)
