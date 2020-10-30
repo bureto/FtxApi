@@ -21,6 +21,25 @@ namespace FtxApi.Util
         {
             return (long)(time - _epochTime).TotalSeconds;
         }
+
+        public static bool IsPerpetual(string name)
+        {
+            return name.Contains("-PERP");
+        }
+        public static string GetUnderlyingName(string name)
+        {
+            var slashIndex = name.IndexOf("/");
+            if (slashIndex != -1)
+                return name.Substring(0, slashIndex);
+            else
+            {
+                var dashIndex = name.IndexOf("-");
+                if (dashIndex != -1)
+                    return name.Substring(0, dashIndex);
+                else
+                    throw new ArgumentException("Market instrument name did not contain a dash (-) or a slash (/).");
+            }
+        }
     }
 
 }
